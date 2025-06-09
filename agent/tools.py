@@ -91,3 +91,30 @@ class PaperDownloadTool(Tool):
             return "No PDFs downloaded"
 
         return "Downloaded: " + ", ".join(downloaded)
+
+
+class PDFExtractTool(Tool):
+    """Extract all text content from a PDF file."""
+
+    name = "pdf_extract"
+    description = "Extract and return text from a PDF given its file path"
+
+    def run(self, input: str) -> str:
+        from pathlib import Path
+        import fitz  # PyMuPDF
+
+        path = Path(input.strip())
+        if not path.is_file():
+            return "File not found"
+
+        try:
+            doc = fitz.open(path)
+        except Exception as exc:
+            return f"Failed to open PDF: {exc}"
+
+        texts: list[str] = []
+        for page in doc:
+            texts.append(page.get_text())
+        doc.close()
+
+        return "\n".join(texts)
