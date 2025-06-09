@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Jupyter & IPython
+.ipynb_checkpoints/
+*.ipynb
+
+# Editor settings
+.vscode/
+.idea/
+*.swp
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Logs and output
+*.log
+
+# Papers and PDFs
+papers/
+summaries/
+*.pdf
+
+# Environment variables
+.env
+.env.*
+
+# Cache
+*.cache
+*.mypy_cache
+.pytest_cache
+
+# Poetry lock backups (if you use poetry)
+poetry.lock.bak

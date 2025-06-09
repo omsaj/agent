@@ -1,29 +1,24 @@
-"""Core components of the local LLM agent.
-
-This module defines the ``LocalAgent`` class responsible for loading
-configuration, managing short‑term memory and providing hooks for
-processing user input and executing tools. Both the memory backend and
-tool interface are designed to be easily replaced with more
-sophisticated implementations in the future.
-"""
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Any, List
-
 import yaml
-
-
+from agent.tools import ArxivDownloadTool
+from agent.tools import SmartResearchTool
+from agent.tools import SciHubDownloadTool
+from agent.tools import BulkURLResearchTool
+from agent.tools import ScholarResearchTool
+from agent.tools import ScholarSearchTool
+from agent.tools import (
+    EchoTool,
+    PaperDownloadTool,
+    PDFExtractTool,
+    OllamaChatTool,
+    ResearchAssistantTool,
+    
+)
+from dotenv import load_dotenv
+load_dotenv()
 class LocalAgent:
-    """Simple local LLM agent.
-
-    Parameters
-    ----------
-    config_path:
-        Optional path to the YAML configuration file. If omitted the
-        default ``config/config.yaml`` relative to the project root is
-        loaded.
-    """
+    """Simple local LLM agent."""
 
     def __init__(self, config_path: str | Path | None = None) -> None:
         if config_path is None:
@@ -34,22 +29,28 @@ class LocalAgent:
         with open(config_path, "r", encoding="utf-8") as f:
             self.config: dict[str, Any] = yaml.safe_load(f)
 
-        # short-term memory buffer (ordered list of strings)
         self.memory: List[str] = []
 
-    # ------------------------------------------------------------------
-    # Placeholder interfaces
-    # ------------------------------------------------------------------
+        self.tools = {
+            "echo": EchoTool(),
+            "download_papers": PaperDownloadTool(),
+            "pdf_extract": PDFExtractTool(),
+            "ollama_chat": OllamaChatTool(),
+            "research_assistant": ResearchAssistantTool(),
+            "arxiv_download": ArxivDownloadTool(),
+            "smart_research": SmartResearchTool(),
+            "scihub_download": SciHubDownloadTool(),
+            "scholar_search": ScholarSearchTool(),
+            "bulk_research_from_links": BulkURLResearchTool(),
+            "scholar_research": ScholarResearchTool(),
+        }
+
     def process_input(self, text: str) -> str:
-        """Process input text and return a dummy response."""
-        # Future versions will call the LLM and utilize memory and tools
         self.memory.append(text)
         return "Processed: " + text
 
     def run_tool(self, name: str, input: str) -> str:
-        """Execute a tool by name with the given input.
-
-        This is currently a stub and always returns ``"Tool executed"``.
-        """
-        _ = name, input
-        return "Tool executed"
+        tool = self.tools.get(name)
+        if tool:
+            return tool.run(input)
+        return "Tool not found"
