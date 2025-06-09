@@ -1,0 +1,3 @@
+# Default configuration
+model:
+  name: llama-3-8b-instruct
