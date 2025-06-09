@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from agent.tools import PaperDownloadTool
+from agent.tools import PaperDownloadTool, PDFExtractTool
 
 
 def test_placeholder():
@@ -45,3 +45,21 @@ def test_paper_download_tool(monkeypatch, tmp_path):
     files = list(tmp_path.glob("*.pdf"))
     assert len(files) == 2
     assert result.startswith("Downloaded:")
+
+
+def test_pdf_extract_tool(tmp_path):
+    """Ensure text is extracted from a PDF file."""
+
+    tool = PDFExtractTool()
+
+    import fitz
+
+    pdf_path = tmp_path / "sample.pdf"
+    doc = fitz.open()
+    page = doc.new_page()
+    page.insert_text((72, 72), "hello world")
+    doc.save(pdf_path)
+    doc.close()
+
+    result = tool.run(str(pdf_path))
+    assert "hello world" in result

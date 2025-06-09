@@ -11,7 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, List
 
-from agent.tools import EchoTool, PaperDownloadTool
+from agent.tools import EchoTool, PaperDownloadTool, PDFExtractTool
 
 import yaml
 
@@ -43,6 +43,7 @@ class LocalAgent:
         self.tools = {
             "echo": EchoTool(),
             "download_papers": PaperDownloadTool(),
+            "pdf_extract": PDFExtractTool(),
         }
 
     # ------------------------------------------------------------------
