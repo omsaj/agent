@@ -11,6 +11,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, List
 
+from agent.tools import EchoTool
+
 import yaml
 
 
@@ -37,6 +39,9 @@ class LocalAgent:
         # very short‑term memory buffer (ordered list of strings)
         self.memory: List[str] = []
 
+        # available tools by name
+        self.tools = {"echo": EchoTool()}
+
     # ------------------------------------------------------------------
     # Placeholder interfaces
     # ------------------------------------------------------------------
@@ -49,7 +54,9 @@ class LocalAgent:
     def run_tool(self, name: str, input: str) -> str:
         """Execute a tool by name with the given input.
 
-        This is currently a stub and always returns ``"Tool executed"``.
+        Look up the tool by ``name`` and run it with ``input`` if available.
         """
-        _ = name, input
-        return "Tool executed"
+        tool = self.tools.get(name)
+        if tool is None:
+            return "Tool not found"
+        return tool.run(input)
