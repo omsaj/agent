@@ -26,3 +26,68 @@ class EchoTool(Tool):
     def run(self, input: str) -> str:
         """Return ``input`` wrapped in an echo string."""
         return f"Echo: {input}"
+
+
+class PaperDownloadTool(Tool):
+    """Search Semantic Scholar and download a few PDFs for later parsing."""
+
+    name = "download_papers"
+    description = (
+        "Search Semantic Scholar for papers matching a query and save up to "
+        "three PDFs locally."
+    )
+
+    def run(self, input: str) -> str:
+        import os
+        from pathlib import Path
+        import requests
+
+        query = input.strip()
+        if not query:
+            return "No query provided"
+
+        search_url = "https://api.semanticscholar.org/graph/v1/paper/search"
+        params = {
+            "query": query,
+            "limit": 3,
+            "fields": "title,openAccessPdf",
+        }
+
+        try:
+            resp = requests.get(search_url, params=params, timeout=10)
+            resp.raise_for_status()
+        except Exception as exc:
+            return f"Search failed: {exc}"
+
+        data = resp.json()
+        papers = data.get("data", [])
+        if not papers:
+            return "No results found"
+
+        save_dir = Path(
+            os.getenv("PAPERS_DIR", Path(__file__).resolve().parents[1] / "papers")
+        )
+        save_dir.mkdir(parents=True, exist_ok=True)
+
+        downloaded: list[str] = []
+        for paper in papers:
+            pdf_url = paper.get("openAccessPdf", {}).get("url")
+            title = paper.get("title", "paper")
+            if not pdf_url:
+                continue
+            try:
+                pdf_resp = requests.get(pdf_url, timeout=10)
+                pdf_resp.raise_for_status()
+            except Exception:
+                continue
+
+            name = title[:50].replace("/", "_").replace(" ", "_") + ".pdf"
+            path = save_dir / name
+            with open(path, "wb") as f:
+                f.write(pdf_resp.content)
+            downloaded.append(str(path))
+
+        if not downloaded:
+            return "No PDFs downloaded"
+
+        return "Downloaded: " + ", ".join(downloaded)
