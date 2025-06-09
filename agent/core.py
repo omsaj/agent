@@ -11,7 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, List
 
-from agent.tools import EchoTool
+from agent.tools import EchoTool, PaperDownloadTool
 
 import yaml
 
@@ -40,7 +40,10 @@ class LocalAgent:
         self.memory: List[str] = []
 
         # available tools by name
-        self.tools = {"echo": EchoTool()}
+        self.tools = {
+            "echo": EchoTool(),
+            "download_papers": PaperDownloadTool(),
+        }
 
     # ------------------------------------------------------------------
     # Placeholder interfaces
