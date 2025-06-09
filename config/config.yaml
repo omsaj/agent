@@ -1,0 +1,7 @@
+model:
+  name: llama-3-8b-instruct
+  quantization: q4_0
+  context_length: 8192
+backend:
+  engine: vllm
+  dtype: fp16
