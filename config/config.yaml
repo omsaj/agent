@@ -1,0 +1,15 @@
+# Model settings define which LLM to load and how
+model:
+  # Name or path of the model to run
+  name: llama-3-8b-instruct
+  # Quantization method to reduce VRAM usage
+  quantization: q4_0
+  # Maximum tokens the model can consider
+  context_length: 8192
+
+# Backend settings determine how the model is served
+backend:
+  # Inference engine (vLLM provides efficient batching)
+  engine: vllm
+  # Computation precision for weights and activations
+  dtype: fp16
