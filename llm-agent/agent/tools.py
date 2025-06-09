@@ -1,0 +1,3 @@
+"""Tool definitions placeholder."""
+
+TOOLS = []
