@@ -1,0 +1,29 @@
+{
+  "name": "cyberscope-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "classnames": "^2.5.1",
+    "react": "^18.3.1",
+    "react-csv": "^2.2.2",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "sass": "^1.75.0",
+    "typescript": "^5.4.3",
+    "vite": "^5.2.0"
+  }
+}
